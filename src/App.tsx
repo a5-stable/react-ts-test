@@ -71,6 +71,21 @@ export const App = () => {
     setTodos(newTodos);
   }
 
+  const filteredTodos = todos.filter((todo) => {
+    switch (filter) {
+      case 'all':
+        return !todo.removed;
+      case 'checked':
+        return todo.checked && !todo.removed;
+      case 'unchecked':
+        return !todo.checked && !todo.removed;
+      case 'removed':
+        return todo.removed;
+      default:
+        return todo;
+    }
+  });
+
   return (
     <div>
       <select defaultValue="all" onChange={(e) => setFilter(e.target.value as Filter)}>
@@ -86,13 +101,14 @@ export const App = () => {
       >
         <input type="text" onChange={(e) => handleOnChange(e)} />
         <input
+          disabled={filter === 'removed' || filter === 'checked'}
           type="submit"
           value="追加"
           onSubmit={(e) => e.preventDefault()}
         />
       </form>
       <ul>
-        {todos.map((todo) => {
+        {filteredTodos.map((todo) => {
           return (
             <li key={todo.id}>
               <input
